@@ -1,0 +1,21 @@
+# BetterPeek code owners
+# Every PR automatically requests review from the listed owner(s).
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+*                                   @Nekuzaky
+
+# Detection & cache (the data sources of the preview)
+/src/client/java/com/betterpeek/client/detect/   @Nekuzaky
+/src/client/java/com/betterpeek/client/cache/    @Nekuzaky
+
+# Rendering pipeline
+/src/client/java/com/betterpeek/client/render/   @Nekuzaky
+
+# Mixins (touch with care)
+/src/client/java/com/betterpeek/client/mixin/    @Nekuzaky
+/src/client/resources/betterpeek.client.mixins.json   @Nekuzaky
+
+# Build & CI
+/build.gradle           @Nekuzaky
+/gradle.properties      @Nekuzaky
+/.github/workflows/     @Nekuzaky

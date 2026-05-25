@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest a preview capability that isn't currently supported.
+title: "[feat] "
+labels: [enhancement, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The mod's scope is intentionally narrow: *peek at container contents without opening them*. Requests
+        that add unrelated features (inventory sorting, server-side logic, autocrafting) are likely to be
+        declined. Requests that improve the preview experience are very welcome.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What can't you peek at today?
+      description: Describe the container or item type that currently isn't previewed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you expect the preview to behave?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (screenshots, related issues, etc.)
+    validations:
+      required: false
