@@ -1,22 +1,63 @@
 package com.betterpeek.client.render;
 
+import com.betterpeek.client.PreviewState;
+import com.betterpeek.client.detect.InventoryShulkerDetector;
+import com.betterpeek.client.detect.WorldContainerDetector;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
 /**
- * Renders the container preview overlay near the crosshair.
+ * Top-level HUD overlay coordinator.
  *
- * <p>This is the v0.1 stub. Subsequent commits will:
- *   1. Detect the container the player is currently looking at (raycast for
- *      world containers, slot under cursor for inventory shulkers).
- *   2. Read the container's items (BlockEntity NBT for world, ItemStack NBT
- *      for shulkers in inventory).
- *   3. Render a small grid of item icons + counts here.
+ * <p>On every HUD frame:
+ *   1. Bail if the preview state is disabled or the player is paused / on
+ *      the title screen.
+ *   2. If the player has an inventory-style screen open, ask the shulker
+ *      detector; otherwise raycast for a world container.
+ *   3. Hand the resulting snapshot (if any) to {@link PreviewGridRenderer}.
+ *
+ * <p>Detectors are instantiated once and reused (no per-frame allocation).
  */
 public final class ContainerPreviewRenderer {
 
+    private static final int SCREEN_MARGIN = 8;
+
+    private final WorldContainerDetector worldDetector = new WorldContainerDetector();
+    private final InventoryShulkerDetector inventoryDetector = new InventoryShulkerDetector();
+    private final PreviewGridRenderer gridRenderer = new PreviewGridRenderer();
+
     public void render(DrawContext context, RenderTickCounter tickCounter) {
-        // Intentionally empty in v0.1 scaffolding — implementation lands in
-        // the next commit (container detection + grid render).
+        if (!PreviewState.get().enabled()) {
+            return;
+        }
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client == null || client.player == null || client.world == null) {
+            return;
+        }
+
+        PreviewSnapshot snapshot;
+        boolean fromInventory = client.currentScreen != null;
+        if (fromInventory) {
+            snapshot = inventoryDetector.detect(client);
+        } else {
+            snapshot = worldDetector.detect(client);
+        }
+        if (snapshot == null || snapshot.isEmpty()) {
+            return;
+        }
+
+        int screenWidth = context.getScaledWindowWidth();
+        // Anchor: top-right for world previews (don't block crosshair / hand);
+        // near the top-left for inventory previews (avoid the slot tooltip area).
+        int anchorX;
+        int anchorY = SCREEN_MARGIN;
+        if (fromInventory) {
+            anchorX = SCREEN_MARGIN;
+        } else {
+            int approxWidth = Math.max(1, snapshot.columns()) * 16 + 8;
+            anchorX = screenWidth - approxWidth - SCREEN_MARGIN;
+        }
+        gridRenderer.render(context, snapshot, anchorX, anchorY);
     }
 }

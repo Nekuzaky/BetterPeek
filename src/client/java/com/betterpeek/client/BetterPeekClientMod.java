@@ -6,18 +6,24 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 /**
- * Client entry point. Wires the preview renderer into the HUD pipeline and
- * delegates all detection / rendering to the renderer itself so this class
- * stays a thin coordinator.
+ * Client entry point. Wires the preview renderer into the HUD pipeline
+ * and registers the toggle keybind.
+ *
+ * <p>Both the world-container preview and the inventory-shulker preview
+ * are driven by the same {@link ContainerPreviewRenderer} from the HUD
+ * callback — Fabric's HUD callback fires while any screen is open too,
+ * so we don't need a separate ScreenEvents hook.
  */
 public final class BetterPeekClientMod implements ClientModInitializer {
-
-    private ContainerPreviewRenderer renderer;
 
     @Override
     public void onInitializeClient() {
         BetterPeekMod.LOGGER.info("[BetterPeek] client init");
-        this.renderer = new ContainerPreviewRenderer();
-        HudRenderCallback.EVENT.register(this.renderer::render);
+
+        BetterPeekKeybindings keybindings = new BetterPeekKeybindings();
+        keybindings.register();
+
+        ContainerPreviewRenderer renderer = new ContainerPreviewRenderer();
+        HudRenderCallback.EVENT.register(renderer::render);
     }
 }
