@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "betterpeek",
+  "version": "${version}",
+  "name": "BetterPeek",
+  "description": "Hover a chest, barrel, or shulker box and see what's inside. Client-side only, no server install required.",
+  "authors": [
+    "Nekuzaky"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Nekuzaky/BetterPeek",
+    "sources": "https://github.com/Nekuzaky/BetterPeek",
+    "issues": "https://github.com/Nekuzaky/BetterPeek/issues"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "com.betterpeek.BetterPeekMod"
+    ],
+    "client": [
+      "com.betterpeek.client.BetterPeekClientMod"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "betterpeek.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api": "*",
+    "minecraft": "~1.21.11",
+    "java": ">=21"
+  }
+}
